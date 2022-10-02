@@ -4,7 +4,7 @@ from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
 
 cap = {
     e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],
-    e.EV_ABS : [(e.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)),(e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ]
+    e.EV_ABS : [(e.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)), (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0))]
 }
 
 # Mapping
@@ -31,6 +31,7 @@ if mascon_switch is None:
 
 ui = UInput(cap, vendor=0x0AE4, product=0x0003, name='Emulated DGOC-44U')
 
+mascon_switch.grab()
 for event in mascon_switch.read_loop():
     if event.type == e.EV_KEY:
         match event.code:
@@ -49,8 +50,42 @@ for event in mascon_switch.read_loop():
             case 312: # MINUS
                 ui.write(e.EV_KEY, e.BTN_SELECT, event.value)
                 ui.syn()
-            case 313: # START
+            case 313: # PLUS
                 ui.write(e.EV_KEY, e.BTN_START, event.value)
+                ui.syn()
+    if event.type == e.EV_ABS and event.code == e.ABS_HAT0X:
+        match event.value:
+            case -1: # LEFT
+                ui.write(e.EV_KEY, e.BTN_SELECT, 1)
+                ui.write(e.EV_KEY, e.BTN_EAST, 1)
+                ui.write(e.EV_KEY, e.BTN_NORTH, 0)
+                ui.syn()
+            case 1: # RIGHT
+                ui.write(e.EV_KEY, e.BTN_SELECT, 1)
+                ui.write(e.EV_KEY, e.BTN_EAST, 0)
+                ui.write(e.EV_KEY, e.BTN_NORTH, 1)
+                ui.syn()
+            case _: # NONE
+                ui.write(e.EV_KEY, e.BTN_SELECT, 0)
+                ui.write(e.EV_KEY, e.BTN_EAST, 0)
+                ui.write(e.EV_KEY, e.BTN_NORTH, 0)
+                ui.syn()
+    if event.type == e.EV_ABS and event.code == e.ABS_HAT0Y:
+        match event.value:
+            case -1: # UP
+                ui.write(e.EV_KEY, e.BTN_SELECT, 1)
+                ui.write(e.EV_KEY, e.BTN_WEST, 1)
+                ui.write(e.EV_KEY, e.BTN_SOUTH, 0)
+                ui.syn()
+            case 1: # DOWN
+                ui.write(e.EV_KEY, e.BTN_SELECT, 1)
+                ui.write(e.EV_KEY, e.BTN_WEST, 0)
+                ui.write(e.EV_KEY, e.BTN_SOUTH, 1)
+                ui.syn()
+            case _: # NONE
+                ui.write(e.EV_KEY, e.BTN_SELECT, 0)
+                ui.write(e.EV_KEY, e.BTN_WEST, 0)
+                ui.write(e.EV_KEY, e.BTN_SOUTH, 0)
                 ui.syn()
     if event.type == e.EV_ABS and event.code == e.ABS_Y:
         match event.value:
