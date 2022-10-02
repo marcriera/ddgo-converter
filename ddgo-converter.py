@@ -1,148 +1,116 @@
 #!/usr/bin/env python
 
-import pygame  # install via pip install pygame
-import threading
-import queue
-import os
+from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
 
-pygame.init()
-clock = pygame.time.Clock()
+cap = {
+    e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],
+    e.EV_ABS : [(e.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)),(e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ]
+}
 
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-joystick_list = []
-joyid = "joyid"
-joyname = "joyname"
+# Mapping
+# A: BTN_EAST
+# B: BTN_SOUTH
+# C: BTN_NORTH
+# D: BTN_WEST
+# SL: BTN_SELECT
+# ST: BTN_START
+# BRAKE: ABS_X
+# POWER: ABS_Y
 
-for i in range(pygame.joystick.get_count()):
-    jid = {joyid: i, joyname: pygame.joystick.Joystick(i).get_name()}
-    print(pygame.joystick.Joystick(i).get_guid())
-    joystick_list.append(jid)
-mascon_select = next((i for i, item in enumerate(joystick_list) if item["joyname"] == "Nintendo Switch Pro Controller"),
-                     None)
+mascon_switch = None
+devices = [InputDevice(path) for path in list_devices()]
+for device in devices:
+    dev_name = [device.info.vendor, device.info.product, device.name]  
+    if dev_name == [0x0f0d, 0x00c1, "One Handle MasCon for Nintendo Switch"]:
+        mascon_switch = device
+        break
 
-if mascon_select is None:
-    print("No Nintendo Switch Pro Controller found. Connect the correct controller and restart the script")
+if mascon_switch is None:
+    print("No supported controller found.")
     exit()
 
+ui = UInput(cap, vendor=0x0AE4, product=0x0003, name='Emulated DGOC-44U')
 
-mascon_counter = 99
-pygame.event.clear()  # Clear events to remove wrong inputs.
-
-while 1:
-    for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
-            # Lever section
-            mascon_axis = (joysticks[mascon_select].get_axis(1))
-            mascon_axis = (round(mascon_axis, 2))
-            if mascon_axis == 0.8:
-                #print("P4")
-                qMascon.put(power_max)
-                mascon_counter = 1
-            if mascon_axis == 0.62:
-                if mascon_counter == 3:
-                    qMascon.put(power_inc)
-                    mascon_counter = 2
-                if mascon_counter == 1:
-                    qMascon.put(power_dec)
-                    mascon_counter = 2
-            if mascon_axis == 0.44:
-                if mascon_counter == 4:
-                    qMascon.put(power_inc)
-                    mascon_counter = 3
-                if mascon_counter == 2:
-                    qMascon.put(power_dec)
-                    mascon_counter = 3
-            if mascon_axis == 0.25:
-                if mascon_counter == 5:
-                    qMascon.put(power_inc)
-                    mascon_counter = 4
-                if mascon_counter == 3:
-                    qMascon.put(power_dec)
-                    mascon_counter = 4
-            if mascon_axis == 0.0:
-                qMascon.put(neutral)
-                mascon_counter = 5
-            if mascon_axis == -0.21:
-                if mascon_counter == 5:
-                    qMascon.put(brake_inc)
-                    mascon_counter = 6
-                if mascon_counter == 7:
-                    qMascon.put(brake_dec)
-                    if notchfix:
-                        qMascon.put(brake_dec)
-                    mascon_counter = 6
-            if mascon_axis == -0.32:
-                if mascon_counter == 6:
-                    qMascon.put(brake_inc)
-                    if notchfix:
-                        qMascon.put(brake_inc)
-                    mascon_counter = 7
-                if mascon_counter == 8:
-                    qMascon.put(brake_dec)
-                    mascon_counter = 7
-            if mascon_axis == -0.43:
-                if mascon_counter == 7:
-                    qMascon.put(brake_inc)
-                    mascon_counter = 8
-                if mascon_counter == 9:
-                    qMascon.put(brake_dec)
-                    if notchfix:
-                        qMascon.put(brake_dec)
-                    mascon_counter = 8
-            if mascon_axis == -0.53:
-                if mascon_counter == 8:
-                    qMascon.put(brake_inc)
-                    if notchfix:
-                        qMascon.put(brake_inc)
-                    mascon_counter = 9
-                if mascon_counter == 10:
-                    qMascon.put(brake_dec)
-                    mascon_counter = 9
-            if mascon_axis == -0.64:
-                if mascon_counter == 9:
-                    qMascon.put(brake_inc)
-                    mascon_counter = 10
-                if mascon_counter == 11:
-                    qMascon.put(brake_dec)
-                    mascon_counter = 10
-            if mascon_axis == -0.75:
-                if mascon_counter == 10:
-                    qMascon.put(brake_inc)
-                    if notchfix:
-                        qMascon.put(brake_inc)
-                    mascon_counter = 11
-                if mascon_counter == 12:
-                    qMascon.put(brake_dec)
-                    mascon_counter = 11
-            if mascon_axis == -0.85:
-                if mascon_counter == 11:
-                    qMascon.put(brake_inc)
-                    mascon_counter = 12
-                if mascon_counter >= 13:
-                    qMascon.put(brake_dec)
-                    mascon_counter = 12
-            if mascon_axis == -1.00:
-                qMascon.put(brake_eb)
-                mascon_counter = 14
-
-        # Button section
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 0:
-            print("A")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 1:
-            print("B")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 2:
-            print("X")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 3:
-            print("Y")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 4:
-            print("MINUS")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 6:
-            print("PLUS")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 11:
-            print("UP")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 12:
-            print("DOWN")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 13:
-            print("LEFT")
-        if event.type == pygame.JOYBUTTONDOWN and event.button == 14:
-            print("RIGHT")
+for event in mascon_switch.read_loop():
+    if event.type == e.EV_KEY:
+        match event.code:
+            case 304: # Y
+                ui.write(e.EV_KEY, e.BTN_EAST, event.value)
+                ui.syn()
+            case 305: # B
+                ui.write(e.EV_KEY, e.BTN_SOUTH, event.value)
+                ui.syn()
+            case 306: # A
+                ui.write(e.EV_KEY, e.BTN_NORTH, event.value)
+                ui.syn()
+            case 307: # X
+                ui.write(e.EV_KEY, e.BTN_WEST, event.value)
+                ui.syn()
+            case 312: # MINUS
+                ui.write(e.EV_KEY, e.BTN_SELECT, event.value)
+                ui.syn()
+            case 313: # START
+                ui.write(e.EV_KEY, e.BTN_START, event.value)
+                ui.syn()
+    if event.type == e.EV_ABS and event.code == e.ABS_Y:
+        match event.value:
+            case 0x0: # EMG
+                ui.write(e.EV_ABS, e.ABS_X, 0xB9)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x5:
+                ui.write(e.EV_ABS, e.ABS_X, 0xB5)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x13:
+                ui.write(e.EV_ABS, e.ABS_X, 0xB2)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x20:
+                ui.write(e.EV_ABS, e.ABS_X, 0xAF)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x2E:
+                ui.write(e.EV_ABS, e.ABS_X, 0xA8)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x3C:
+                ui.write(e.EV_ABS, e.ABS_X, 0xA2)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x49:
+                ui.write(e.EV_ABS, e.ABS_X, 0x9A)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x57:
+                ui.write(e.EV_ABS, e.ABS_X, 0x94)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x65:
+                ui.write(e.EV_ABS, e.ABS_X, 0x8A)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x80:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x81)
+                ui.syn()
+            case 0x9F:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x6D)
+                ui.syn()
+            case 0xB7:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x54)
+                ui.syn()
+            case 0xCE:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x3F)
+                ui.syn()
+            case 0xE6:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x21)
+                ui.syn()
+            case 0xFF:
+                ui.write(e.EV_ABS, e.ABS_X, 0x79)
+                ui.write(e.EV_ABS, e.ABS_Y, 0x00)
+                ui.syn()
