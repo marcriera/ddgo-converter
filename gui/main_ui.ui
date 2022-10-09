@@ -46,7 +46,7 @@
      <number>9</number>
     </property>
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_main">
       <item>
        <widget class="QGroupBox" name="groupBox_physicalControllers">
         <property name="title">
@@ -66,12 +66,12 @@
            </attribute>
            <column>
             <property name="text">
-             <string>Name</string>
+             <string>ID</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>ID</string>
+             <string>Name</string>
             </property>
            </column>
            <column>
@@ -80,6 +80,37 @@
             </property>
            </column>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_physicalControllerActions">
+           <item>
+            <widget class="QPushButton" name="pushButton_physicalControllerRefresh">
+             <property name="text">
+              <string>Refresh</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_physicalControllerActions">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_physicalControllerConfig">
+             <property name="text">
+              <string>Configuration</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -119,7 +150,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
+          <spacer name="horizontalSpacer_emulatedController">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>

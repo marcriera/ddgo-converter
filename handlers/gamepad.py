@@ -1,8 +1,27 @@
-#!/usr/bin/env python
-
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
 
-cap = {
+class GamepadHandler:
+    def __init__(self):
+        super().__init__()
+
+    def find_gamepads():
+        gamepads = []
+        devices = [InputDevice(path) for path in list_devices()]
+        for device in devices:
+            gamepads.append(Gamepad(device.info.vendor, device.info.product, device.name))
+        return gamepads
+
+class Gamepad:
+
+    def __init__(self, vid, pid, name):
+        super().__init__()
+        self.vid = vid
+        self.pid = pid
+        self.name = name
+
+
+
+""" cap = {
     e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],
     e.EV_ABS : [(e.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)), (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0))]
 }
@@ -149,3 +168,4 @@ for event in mascon_switch.read_loop():
                 ui.write(e.EV_ABS, e.ABS_X, 0x79)
                 ui.write(e.EV_ABS, e.ABS_Y, 0x00)
                 ui.syn()
+ """
