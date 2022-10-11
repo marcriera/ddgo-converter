@@ -20,7 +20,6 @@ class Gamepad:
         self.name = name
 
 
-
 """ cap = {
     e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],
     e.EV_ABS : [(e.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)), (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0))]
