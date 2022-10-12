@@ -6,10 +6,11 @@ from handlers.gamepad import Gamepad
 from models.gamepad import GamepadModel
 
 class MainWindow(QMainWindow):
-    def __init__(self, gamepad_handler):
+    def __init__(self, gamepad_handler, config_handler):
         super().__init__()
 
         self._gamepad_handler = gamepad_handler
+        self._config_handler = config_handler
         self._gui = Ui_MainWindow()
         self._gui.setupUi(self)
 
@@ -20,9 +21,12 @@ class MainWindow(QMainWindow):
         self._gui.tableView_physicalControllerList.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
         self._gui.pushButton_physicalControllerRefresh.clicked.connect(self.controller_list_refresh)
+        self._gui.pushButton_physicalControllerConfig.clicked.connect(self.save)
 
     def controller_list_refresh(self):
         self.gamepad_model.beginResetModel()
         self.gamepad_model.gamepads = self._gamepad_handler.find_gamepads()
         self.gamepad_model.endResetModel()
-        return
+
+    def save(self):
+        self._config_handler.save()
