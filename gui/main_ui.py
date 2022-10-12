@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         self.tableView_physicalControllerList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableView_physicalControllerList.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tableView_physicalControllerList.setObjectName("tableView_physicalControllerList")
-        self.tableView_physicalControllerList.horizontalHeader().setStretchLastSection(True)
+        self.tableView_physicalControllerList.horizontalHeader().setHighlightSections(False)
         self.tableView_physicalControllerList.verticalHeader().setVisible(False)
         self.verticalLayout_2.addWidget(self.tableView_physicalControllerList)
         self.horizontalLayout_physicalControllerActions = QtWidgets.QHBoxLayout()

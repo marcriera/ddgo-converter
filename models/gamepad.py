@@ -17,9 +17,12 @@ class GamepadModel(QAbstractTableModel):
                 case 1:
                     return self.gamepads[index.row()].name
                 case 2:
-                    return self.get_gamepad_hash(index)
-                case _:
-                    return None
+                    if self.gamepads[index.row()].type == Gamepad.GamepadType.UNKNOWN:
+                        return "Not configured"
+                    else:
+                        return "Configured"
+        elif role == Qt.TextAlignmentRole and index.column() != 1:
+            return Qt.AlignCenter
 
     def rowCount(self, index):
         return len(self.gamepads)

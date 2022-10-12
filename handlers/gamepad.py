@@ -1,3 +1,4 @@
+from enum import Enum
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
 
 class GamepadHandler:
@@ -13,12 +14,24 @@ class GamepadHandler:
 
 class Gamepad:
 
+    class GamepadType(Enum):
+        UNKNOWN = 0
+        CLASSIC = 1
+        NSWITCH = 2
+
     def __init__(self, vid, pid, name):
         super().__init__()
         self.vid = vid
         self.pid = pid
         self.name = name
+        self.type = self.get_gamepad_type(vid, pid)
+        self.config = None
 
+    def get_gamepad_type(self, vid, pid):
+        match vid, pid:
+            case 0x0f0d, 0x00c1:
+                return self.GamepadType.NSWITCH
+        return self.GamepadType.UNKNOWN
 
 """ cap = {
     e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],
