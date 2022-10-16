@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
 from gui.main_ui import Ui_MainWindow
-from gamepads.physical import PhysicalGamepad
+import gamepads.physical as gamepad_physical
+import gamepads.emulated as gamepad_emulated
 from models.gamepad import GamepadModel
 
 class MainWindow(QMainWindow):
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
         self._gui.tableView_physicalControllerList.selectRow(0)
 
         self._gui.pushButton_physicalControllerRefresh.clicked.connect(self.controller_list_refresh)
-        self._gui.pushButton_emulatedControllerStart.clicked.connect(self.start)
+        self._gui.pushButton_emulatedControllerStart.clicked.connect(self.controller_emulator_start)
 
     def controller_list_refresh(self):
         self.gamepad_model.beginResetModel()
@@ -32,12 +33,14 @@ class MainWindow(QMainWindow):
     def controller_list_selection_changed(self):
         enabled = False
         rows = self._gui.tableView_physicalControllerList.selectionModel().selectedRows()
-        if rows and self.gamepad_model.gamepads[rows[0].row()].type != PhysicalGamepad.GamepadType.UNKNOWN:
+        if rows and self.gamepad_model.gamepads[rows[0].row()].type != gamepad_physical.PhysicalGamepad.GamepadType.UNKNOWN:
             enabled = True
         self._gui.pushButton_emulatedControllerStart.setEnabled(enabled)
 
-    def start(self):
+    def controller_emulator_start(self):
+        self._gui.pushButton_emulatedControllerStart.setEnabled(False)
         rows = self._gui.tableView_physicalControllerList.selectionModel().selectedRows()
         if rows:
             gamepad = self.gamepad_model.gamepads[rows[0].row()]
-            print(gamepad.name)
+            emulated_gamepad = gamepad_emulated.PC2HandleGamepad()
+            self._gamepad_handler.start_gamepad_emulator(gamepad, emulated_gamepad)

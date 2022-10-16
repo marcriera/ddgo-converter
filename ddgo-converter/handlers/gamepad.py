@@ -1,7 +1,7 @@
 from enum import Enum
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
-from gamepads.physical import PhysicalGamepad
-from gamepads.emulated import EmulatedGamepad
+import gamepads.physical as gamepad_physical
+import gamepads.emulated as gamepad_emulated
 
 class GamepadHandler:
     def __init__(self):
@@ -11,13 +11,13 @@ class GamepadHandler:
         gamepads = []
         devices = [InputDevice(path) for path in list_devices()]
         for device in devices:
-            gamepads.append(PhysicalGamepad(device.info.vendor, device.info.product, device.name))
+            gamepads.append(gamepad_physical.create_gamepad(device.info.vendor, device.info.product, device.name))
         return gamepads
     
     def start_gamepad_emulator(gamepad, emulated_gamepad):
-        realtype = gamepad.type
-        emutype = emulated_gamepad.type
-        print(str(realtype)+str(emutype))
+        for i in range(2):
+            gamepad.read_input()
+            emulated_gamepad.write_input()
 
 
 """ cap = {
