@@ -33,4 +33,3 @@ class GamepadModel(QAbstractTableModel):
         if role != Qt.DisplayRole or orientation != Qt.Horizontal:
             return QVariant()
         return headers[section]
-

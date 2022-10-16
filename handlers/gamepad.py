@@ -2,17 +2,6 @@ from enum import Enum
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
 from hashlib import sha1
 
-class GamepadHandler:
-    def __init__(self):
-        super().__init__()
-
-    def find_gamepads():
-        gamepads = []
-        devices = [InputDevice(path) for path in list_devices()]
-        for device in devices:
-            gamepads.append(Gamepad(device.info.vendor, device.info.product, device.name))
-        return gamepads
-
 class Gamepad:
 
     class GamepadType(Enum):
@@ -40,11 +29,38 @@ class Gamepad:
         hash = sha1(str(self.id + ":" + self.name).encode('utf-8')).hexdigest()
         return hash
 
-    def _get_gamepad_type(self):
+    def get_gamepad_type(self):
         match self.vid, self.pid:
             case 0x0f0d, 0x00c1:
                 return self.GamepadType.NSWITCH
         return self.GamepadType.UNKNOWN
+
+class EmulatedGamepad:
+    
+    class GamepadType(Enum):
+        DGOC44U = 0
+        PS1 = 1
+
+    def __init__(self, type):
+        super().__init__()
+        self.type = type
+
+class GamepadHandler:
+    def __init__(self):
+        super().__init__()
+
+    def find_gamepads():
+        gamepads = []
+        devices = [InputDevice(path) for path in list_devices()]
+        for device in devices:
+            gamepads.append(Gamepad(device.info.vendor, device.info.product, device.name))
+        return gamepads
+    
+    def start_gamepad_emulator(gamepad: Gamepad, emulated_gamepad: EmulatedGamepad):
+        realtype = gamepad.type
+        emutype = emulated_gamepad.type
+        print(str(realtype)+str(emutype))
+
 
 """ cap = {
     e.EV_KEY : [e.BTN_NORTH, e.BTN_SOUTH, e.BTN_EAST, e.BTN_WEST, e.BTN_SELECT, e.BTN_START],

@@ -152,6 +152,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_emulatedControllerStart">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Start</string>
            </property>

@@ -76,6 +76,7 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.pushButton_emulatedControllerStart = QtWidgets.QPushButton(self.groupBox_emulatedController)
+        self.pushButton_emulatedControllerStart.setEnabled(False)
         self.pushButton_emulatedControllerStart.setObjectName("pushButton_emulatedControllerStart")
         self.horizontalLayout.addWidget(self.pushButton_emulatedControllerStart)
         self.verticalLayout_main.addWidget(self.groupBox_emulatedController)
