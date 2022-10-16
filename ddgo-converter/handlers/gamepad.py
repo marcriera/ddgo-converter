@@ -1,49 +1,7 @@
 from enum import Enum
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
-from hashlib import sha1
-
-class Gamepad:
-
-    class GamepadType(Enum):
-        UNKNOWN = 0
-        CLASSIC = 1
-        NSWITCH = 2
-
-    def __init__(self, vid, pid, name):
-        super().__init__()
-        self.vid = vid
-        self.pid = pid
-        self.name = name
-        self.id = self._get_gamepad_id()
-        self.hash = self._get_gamepad_hash()
-        self.type = self._get_gamepad_type()
-        self.config = []
-
-    def _get_gamepad_id(self):
-        vid = format(self.vid, "x").zfill(4)
-        pid = format(self.pid, "x").zfill(4)
-        id = str(vid + ":" + pid)
-        return id
-
-    def _get_gamepad_hash(self):
-        hash = sha1(str(self.id + ":" + self.name).encode('utf-8')).hexdigest()
-        return hash
-
-    def get_gamepad_type(self):
-        match self.vid, self.pid:
-            case 0x0f0d, 0x00c1:
-                return self.GamepadType.NSWITCH
-        return self.GamepadType.UNKNOWN
-
-class EmulatedGamepad:
-    
-    class GamepadType(Enum):
-        DGOC44U = 0
-        PS1 = 1
-
-    def __init__(self, type):
-        super().__init__()
-        self.type = type
+from gamepads.physical import PhysicalGamepad
+from gamepads.emulated import EmulatedGamepad
 
 class GamepadHandler:
     def __init__(self):
@@ -53,10 +11,10 @@ class GamepadHandler:
         gamepads = []
         devices = [InputDevice(path) for path in list_devices()]
         for device in devices:
-            gamepads.append(Gamepad(device.info.vendor, device.info.product, device.name))
+            gamepads.append(PhysicalGamepad(device.info.vendor, device.info.product, device.name))
         return gamepads
     
-    def start_gamepad_emulator(gamepad: Gamepad, emulated_gamepad: EmulatedGamepad):
+    def start_gamepad_emulator(gamepad, emulated_gamepad):
         realtype = gamepad.type
         emutype = emulated_gamepad.type
         print(str(realtype)+str(emutype))

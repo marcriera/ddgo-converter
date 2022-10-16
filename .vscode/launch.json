@@ -8,7 +8,7 @@
             "name": "Run main program",
             "type": "python",
             "request": "launch",
-            "program": "ddgo-converter.py",
+            "program": "ddgo-converter/ddgo-converter.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

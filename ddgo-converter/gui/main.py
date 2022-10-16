@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
 from gui.main_ui import Ui_MainWindow
-from handlers.gamepad import Gamepad
+from gamepads.physical import PhysicalGamepad
 from models.gamepad import GamepadModel
 
 class MainWindow(QMainWindow):
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
     def controller_list_selection_changed(self):
         enabled = False
         rows = self._gui.tableView_physicalControllerList.selectionModel().selectedRows()
-        if rows and self.gamepad_model.gamepads[rows[0].row()].type != Gamepad.GamepadType.UNKNOWN:
+        if rows and self.gamepad_model.gamepads[rows[0].row()].type != PhysicalGamepad.GamepadType.UNKNOWN:
             enabled = True
         self._gui.pushButton_emulatedControllerStart.setEnabled(enabled)
 

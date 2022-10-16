@@ -1,0 +1,3 @@
+evdev
+hashlib
+PyQt5

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QVariant, QAbstractTableModel
-from handlers.gamepad import Gamepad
+from gamepads.physical import PhysicalGamepad
 
 headers = ["ID", "Name", "Status"]
 
@@ -16,7 +16,7 @@ class GamepadModel(QAbstractTableModel):
                 case 1:
                     return self.gamepads[index.row()].name
                 case 2:
-                    if self.gamepads[index.row()].type == Gamepad.GamepadType.UNKNOWN:
+                    if self.gamepads[index.row()].type == PhysicalGamepad.GamepadType.UNKNOWN:
                         return "Not configured"
                     else:
                         return "Configured"
