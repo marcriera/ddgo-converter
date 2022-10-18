@@ -1,5 +1,5 @@
-from enum import Enum
 from evdev import InputDevice, list_devices, ecodes as e, UInput, AbsInfo
+import events.input as input_events
 import gamepads.physical as gamepad_physical
 import gamepads.emulated as gamepad_emulated
 
@@ -12,12 +12,16 @@ class GamepadHandler:
         devices = [InputDevice(path) for path in list_devices()]
         for device in devices:
             gamepads.append(gamepad_physical.create_gamepad(device.info.vendor, device.info.product, device.name))
+        gamepads.append(gamepad_physical.create_gamepad(0x0f0d, 0x00c1, "Test gamepad"))
         return gamepads
     
     def start_gamepad_emulator(gamepad, emulated_gamepad):
-        for i in range(2):
-            gamepad.read_input()
-            emulated_gamepad.write_input()
+        while True:
+            event = gamepad.read_input()
+            if event is not None:
+                if event.type == input_events.InputEvent.EventType.ERROR:
+                    break
+                emulated_gamepad.write_input(event)
 
 
 """ cap = {

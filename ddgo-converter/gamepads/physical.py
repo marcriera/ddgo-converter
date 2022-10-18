@@ -1,6 +1,8 @@
-from enum import Enum
+from enum import IntEnum
+import evdev
 from hashlib import sha1
-import time
+from events.input import InputEvent
+from select import select
 
 def create_gamepad(vid, pid, name):
     match vid, pid:
@@ -10,7 +12,7 @@ def create_gamepad(vid, pid, name):
 
 class PhysicalGamepad:
 
-    class GamepadType(Enum):
+    class GamepadType(IntEnum):
         UNKNOWN = 0
         CLASSIC = 1
         SWITCH = 2
@@ -35,14 +37,42 @@ class PhysicalGamepad:
         hash = sha1(str(self.id + ":" + self.name).encode('utf-8')).hexdigest()
         return hash
 
+    def _get_device(self):
+        for device in [evdev.InputDevice(path) for path in evdev.list_devices()]:
+            dev_name = [device.info.vendor, device.info.product, device.name]  
+            if dev_name == [self.vid, self.pid, self.name]:
+                return device
+
 class SwitchGamepad(PhysicalGamepad):
 
     def __init__(self, * args):
         super().__init__(* args)
         self.type = self.GamepadType.SWITCH
         self.config = []
+        self.device = self._get_device()
 
     def read_input(self):
-        time.sleep(5)
-        print("Read from ZKNS-001 correct")
-        return 0
+        # time.sleep(5)
+        # print("Read from ZKNS-001 correct")
+        # return InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_A)
+        print(self.device.active_keys())
+        select([self.device], [], [], 5)
+        try:
+            event = self.device.read_one()
+            if event is not None:
+                if event.type == evdev.ecodes.EV_KEY:
+                    match event.code:
+                        case 304: # Y
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_A)
+                        case 305: # B
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_B)
+                        case 306: # A
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_C)
+                        case 307: # X
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_D)
+                        case 312: # MINUS
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_SELECT)
+                        case 313: # PLUS
+                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_START)
+        except OSError:
+            return (InputEvent(InputEvent.EventType.ERROR, None))
