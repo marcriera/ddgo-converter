@@ -55,24 +55,25 @@ class SwitchGamepad(PhysicalGamepad):
         # time.sleep(5)
         # print("Read from ZKNS-001 correct")
         # return InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_A)
-        print(self.device.active_keys())
         select([self.device], [], [], 5)
         try:
             event = self.device.read_one()
+            input_events = []
             if event is not None:
                 if event.type == evdev.ecodes.EV_KEY:
                     match event.code:
                         case 304: # Y
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_A)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_A))
                         case 305: # B
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_B)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_B))
                         case 306: # A
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_C)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_C))
                         case 307: # X
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_D)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_D))
                         case 312: # MINUS
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_SELECT)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_SELECT))
                         case 313: # PLUS
-                            return InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_START)
+                            input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_START))
+                return input_events
         except OSError:
-            return (InputEvent(InputEvent.EventType.ERROR, None))
+            return [InputEvent(InputEvent.EventType.ERROR, None)]

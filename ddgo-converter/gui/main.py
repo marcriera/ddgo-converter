@@ -1,6 +1,7 @@
 import sys
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
+import threading
 from gui.main_ui import Ui_MainWindow
 import gamepads.physical as gamepad_physical
 import gamepads.emulated as gamepad_emulated
@@ -13,6 +14,8 @@ class MainWindow(QMainWindow):
         self._gamepad_handler = gamepad_handler
         self._gui = Ui_MainWindow()
         self._gui.setupUi(self)
+        self._emuthread = None
+        self._emuthread_stop = threading.Event()
 
         self.gamepad_model = GamepadModel(self._gamepad_handler.find_gamepads())
         self._gui.tableView_physicalControllerList.setModel(self.gamepad_model)
@@ -24,11 +27,18 @@ class MainWindow(QMainWindow):
 
         self._gui.pushButton_physicalControllerRefresh.clicked.connect(self.controller_list_refresh)
         self._gui.pushButton_emulatedControllerStart.clicked.connect(self.controller_emulator_start)
+        self._gui.pushButton_emulatedControllerStop.clicked.connect(self.controller_emulator_stop)
+
+        self._gui.pushButton_emulatedControllerStop.setVisible(False)
+
+    def closeEvent(self, event):
+        self._emuthread_stop.set()
 
     def controller_list_refresh(self):
         self.gamepad_model.beginResetModel()
         self.gamepad_model.gamepads = self._gamepad_handler.find_gamepads()
         self.gamepad_model.endResetModel()
+        self.controller_list_selection_changed()
 
     def controller_list_selection_changed(self):
         enabled = False
@@ -37,10 +47,41 @@ class MainWindow(QMainWindow):
             enabled = True
         self._gui.pushButton_emulatedControllerStart.setEnabled(enabled)
 
+    def lock_interface(self,):
+        self._gui.pushButton_emulatedControllerStart.setVisible(False)
+        self._gui.pushButton_emulatedControllerStop.setVisible(True)
+        self._gui.tableView_physicalControllerList.setEnabled(False)
+        self._gui.pushButton_physicalControllerRefresh.setEnabled(False)
+        self._gui.pushButton_physicalControllerConfig.setEnabled(False)
+        self._gui.comboBox_emulatedControllerModel.setEnabled(False)
+    
+    def unlock_interface(self,):
+        self._gui.pushButton_emulatedControllerStart.setVisible(True)
+        self._gui.pushButton_emulatedControllerStop.setVisible(False)
+        self._gui.tableView_physicalControllerList.setEnabled(True)
+        self._gui.pushButton_physicalControllerRefresh.setEnabled(True)
+        self._gui.pushButton_physicalControllerConfig.setEnabled(True)
+        self._gui.comboBox_emulatedControllerModel.setEnabled(True)
+
     def controller_emulator_start(self):
-        self._gui.pushButton_emulatedControllerStart.setEnabled(False)
+        self.lock_interface()
+        self._gui.statusbar.showMessage("Gamepad emulator running...")
         rows = self._gui.tableView_physicalControllerList.selectionModel().selectedRows()
         if rows:
             gamepad = self.gamepad_model.gamepads[rows[0].row()]
             emulated_gamepad = gamepad_emulated.PC2HandleGamepad()
-            self._gamepad_handler.start_gamepad_emulator(gamepad, emulated_gamepad)
+            self._emuthread = threading.Thread(target=self._gamepad_handler.run_gamepad_emulator, args=(gamepad, emulated_gamepad, self._emuthread_stop))
+            self._emuthread.start()
+
+    def controller_emulator_stop(self):
+        self._gui.statusbar.showMessage("Stopping gamepad emulator...")
+        self._emuthread_stop.set()
+        self._emuthread.join(timeout=0.05)
+        if self._emuthread.is_alive():
+            QTimer.singleShot(50, self.controller_emulator_stop)
+            return
+        self._emuthread_stop.clear()
+        self.unlock_interface()
+        self.controller_list_refresh()
+        self._gui.statusbar.showMessage("Gamepad emulator stopped successfully!", 5000)
+
