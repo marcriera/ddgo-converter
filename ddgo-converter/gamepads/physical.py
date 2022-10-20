@@ -77,29 +77,23 @@ class SwitchGamepad(PhysicalGamepad):
                 if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_HAT0X:
                     match event.value:
                         case -1: # LEFT
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_LEFT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_RIGHT))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_LEFT))
                         case 1: # RIGHT
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_LEFT))
                             input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_RIGHT))
                         case _: # NONE
-                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_SELECT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_LEFT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_RIGHT))
                 if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_HAT0Y:
                     match event.value:
                         case -1: # UP
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_UP))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_DOWN))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_UP))
                         case 1: # DOWN
-                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_UP))
                             input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_DOWN))
                         case _: # NONE
-                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_SELECT))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_UP))
                             input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_DOWN))
                 if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_Y:

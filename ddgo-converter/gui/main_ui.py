@@ -48,6 +48,7 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_physicalControllerActions.addItem(spacerItem)
         self.pushButton_physicalControllerConfig = QtWidgets.QPushButton(self.groupBox_physicalControllers)
+        self.pushButton_physicalControllerConfig.setEnabled(False)
         self.pushButton_physicalControllerConfig.setObjectName("pushButton_physicalControllerConfig")
         self.horizontalLayout_physicalControllerActions.addWidget(self.pushButton_physicalControllerConfig)
         self.verticalLayout_2.addLayout(self.horizontalLayout_physicalControllerActions)

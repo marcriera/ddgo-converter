@@ -30,9 +30,15 @@ class MainWindow(QMainWindow):
         self._gui.pushButton_emulatedControllerStop.clicked.connect(self.controller_emulator_stop)
 
         self._gui.pushButton_emulatedControllerStop.setVisible(False)
+        self.populate_controller_combobox()
 
     def closeEvent(self, event):
         self._emuthread_stop.set()
+
+    def populate_controller_combobox(self):
+        self._gui.comboBox_emulatedControllerModel.addItem("PC two-handle controller (DGOC-44U)", gamepad_emulated.PC2HandleGamepad())
+        #self._gui.comboBox_emulatedControllerModel.addItem("N64 two-handle controller (TCPP-20003)", gamepad_emulated.N64Gamepad())
+        self._gui.comboBox_emulatedControllerModel.setCurrentIndex(0)
 
     def controller_list_refresh(self):
         self.gamepad_model.beginResetModel()
@@ -69,7 +75,7 @@ class MainWindow(QMainWindow):
         rows = self._gui.tableView_physicalControllerList.selectionModel().selectedRows()
         if rows:
             gamepad = self.gamepad_model.gamepads[rows[0].row()]
-            emulated_gamepad = gamepad_emulated.PC2HandleGamepad()
+            emulated_gamepad = self._gui.comboBox_emulatedControllerModel.itemData(self._gui.comboBox_emulatedControllerModel.currentIndex())
             self._emuthread = threading.Thread(target=self._gamepad_handler.run_gamepad_emulator, args=(gamepad, emulated_gamepad, self._emuthread_stop))
             self._emuthread.start()
 
