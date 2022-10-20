@@ -24,7 +24,7 @@ class PC2HandleGamepad(EmulatedGamepad):
         self.type = self.GamepadType.PC2HANDLE
         self.capabilities = {
                             ecodes.EV_KEY : [ecodes.BTN_NORTH, ecodes.BTN_SOUTH, ecodes.BTN_EAST, ecodes.BTN_WEST, ecodes.BTN_SELECT, ecodes.BTN_START],
-                            ecodes.EV_ABS : [(ecodes.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)), (ecodes.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0))]
+                            ecodes.EV_ABS : [(ecodes.ABS_X, AbsInfo(0x79, 0, 255, 0, 0, 0)), (ecodes.ABS_Y, AbsInfo(0x81, 0, 255, 0, 0, 0))]
         }
         self.brake_notches = (0x79, 0x8A, 0x94, 0x9A, 0xA2, 0xA8, 0xAF, 0xB2, 0xB5, 0xB9)
         self.power_notches = (0x81, 0x6D, 0x54, 0x3F, 0x21, 0x00)
@@ -77,8 +77,8 @@ class N64Gamepad(EmulatedGamepad):
                             ecodes.EV_KEY : [ecodes.BTN_NORTH, ecodes.BTN_SOUTH, ecodes.BTN_EAST, ecodes.BTN_WEST, ecodes.BTN_TL, ecodes.BTN_TR,
                                             ecodes.BTN_TL2, ecodes.BTN_TR2, ecodes.BTN_SELECT, ecodes.BTN_START, ecodes.BTN_THUMBL, ecodes.BTN_THUMBR,
                                             ecodes.BTN_MODE, ecodes.BTN_DPAD_UP, ecodes.BTN_DPAD_DOWN, ecodes.BTN_DPAD_LEFT, ecodes.BTN_DPAD_RIGHT],
-                            ecodes.EV_ABS : [(ecodes.ABS_X, AbsInfo(0, 0, 255, 0, 0, 0)), (ecodes.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)),
-                                            (ecodes.ABS_RX, AbsInfo(0, 0, 255, 0, 0, 0)), (ecodes.ABS_RY, AbsInfo(0, 0, 255, 0, 0, 0))]
+                            ecodes.EV_ABS : [(ecodes.ABS_X, AbsInfo(128, 0, 255, 0, 0, 0)), (ecodes.ABS_Y, AbsInfo(128, 0, 255, 0, 0, 0)),
+                                            (ecodes.ABS_RX, AbsInfo(128, 0, 255, 0, 0, 0)), (ecodes.ABS_RY, AbsInfo(128, 0, 255, 0, 0, 0))]
         }
 
     def start(self):
@@ -92,17 +92,67 @@ class N64Gamepad(EmulatedGamepad):
             case (InputEvent.EventType.RELEASE_BUTTON | InputEvent.EventType.PRESS_BUTTON):
                 match event.data:
                     case InputEvent.Button.BUTTON_A:
-                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, event.type)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_WEST, event.type)
                     case InputEvent.Button.BUTTON_B:
                         self.ui.write(ecodes.EV_KEY, ecodes.BTN_SOUTH, event.type)
                     case InputEvent.Button.BUTTON_C:
-                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_WEST, event.type)
-                    case InputEvent.Button.BUTTON_D:
-                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_MODE, event.type)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_SELECT, event.type)
                     case InputEvent.Button.BUTTON_SELECT:
-                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_MODE, event.type)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR2, event.type)
                     case InputEvent.Button.BUTTON_START:
                         self.ui.write(ecodes.EV_KEY, ecodes.BTN_START, event.type)
+            case InputEvent.EventType.BRAKE_NOTCH:
+                match event.data:
+                    case 0:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 1:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 2:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 3:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 4:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 5:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 6:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 1)
+                    case 7:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 0)
+                    case 8:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 0)
+                    case 9:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TR, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_EAST, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_NORTH, 0)
             case InputEvent.EventType.POWER_NOTCH:
                 match event.data:
                     case 0:
@@ -113,4 +163,20 @@ class N64Gamepad(EmulatedGamepad):
                         self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_RIGHT, 1)
                         self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_UP, 0)
                         self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL2, 1)
+                    case 2:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_RIGHT, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_UP, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL2, 1)
+                    case 3:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_RIGHT, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_UP, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL2, 0)
+                    case 4:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_RIGHT, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_UP, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL2, 0)
+                    case 5:
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_RIGHT, 1)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_DPAD_UP, 0)
+                        self.ui.write(ecodes.EV_KEY, ecodes.BTN_TL2, 0)
         self.ui.syn()

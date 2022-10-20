@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
 
     def populate_controller_combobox(self):
         self._gui.comboBox_emulatedControllerModel.addItem("PC two-handle controller (DGOC-44U)", gamepad_emulated.PC2HandleGamepad())
-        #self._gui.comboBox_emulatedControllerModel.addItem("N64 two-handle controller (TCPP-20003)", gamepad_emulated.N64Gamepad())
+        self._gui.comboBox_emulatedControllerModel.addItem("N64 two-handle controller (TCPP-20003)", gamepad_emulated.N64Gamepad())
         self._gui.comboBox_emulatedControllerModel.setCurrentIndex(0)
 
     def controller_list_refresh(self):
