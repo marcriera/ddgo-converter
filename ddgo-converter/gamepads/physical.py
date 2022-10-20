@@ -74,6 +74,67 @@ class SwitchGamepad(PhysicalGamepad):
                             input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_SELECT))
                         case 313: # PLUS
                             input_events.append(InputEvent(InputEvent.EventType(event.value), InputEvent.Button.BUTTON_START))
+                if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_HAT0X:
+                    match event.value:
+                        case -1: # LEFT
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_LEFT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_RIGHT))
+                        case 1: # RIGHT
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_LEFT))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_RIGHT))
+                        case _: # NONE
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_LEFT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_RIGHT))
+                if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_HAT0Y:
+                    match event.value:
+                        case -1: # UP
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_UP))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_DOWN))
+                        case 1: # DOWN
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_UP))
+                            input_events.append(InputEvent(InputEvent.EventType.PRESS_BUTTON, InputEvent.Button.BUTTON_DOWN))
+                        case _: # NONE
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_SELECT))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_UP))
+                            input_events.append(InputEvent(InputEvent.EventType.RELEASE_BUTTON, InputEvent.Button.BUTTON_DOWN))
+                if event.type == evdev.ecodes.EV_ABS and event.code == evdev.ecodes.ABS_Y:
+                    match event.value:
+                        case 0x0: # EMG
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 9))
+                        case 0x5:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 8))
+                        case 0x13:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 7))
+                        case 0x20:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 6))
+                        case 0x2E:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 5))
+                        case 0x3C:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 4))
+                        case 0x49:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 3))
+                        case 0x57:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 2))
+                        case 0x65:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 1))
+                        case 0x80: # N
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
+                        case 0x9F:
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 1))
+                        case 0xB7:
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 2))
+                        case 0xCE:
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 3))
+                        case 0xE6:
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 4))
+                        case 0xFF: # P5
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 5))
                 return input_events
         except OSError:
             return [InputEvent(InputEvent.EventType.ERROR, None)]

@@ -13,7 +13,6 @@ class GamepadHandler:
         devices = [InputDevice(path) for path in list_devices()]
         for device in devices:
             gamepads.append(gamepad_physical.create_gamepad(device.info.vendor, device.info.product, device.name))
-        gamepads.append(gamepad_physical.create_gamepad(0x0f0d, 0x00c1, "Test gamepad"))
         return gamepads
     
     def run_gamepad_emulator(gamepad, emulated_gamepad, stop_event):
