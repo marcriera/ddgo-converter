@@ -1,3 +1,2 @@
 evdev
 PyQt5
-pyinstaller=5.4.1

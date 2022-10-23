@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Package application
-      uses: yshalsager/pyinstaller-action-linux@main
+      uses: adriansr/pyinstaller-action-linux@main
       with:
         path: .
 
