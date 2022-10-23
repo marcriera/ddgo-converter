@@ -16,6 +16,7 @@ class GamepadHandler:
         return gamepads
     
     def run_gamepad_emulator(gamepad, emulated_gamepad, stop_event):
+        gamepad.start()
         emulated_gamepad.start()
         while not stop_event.is_set():
             events = gamepad.read_input()
@@ -25,3 +26,4 @@ class GamepadHandler:
                         break
                     emulated_gamepad.write_input(event)
         emulated_gamepad.stop()
+        gamepad.stop()

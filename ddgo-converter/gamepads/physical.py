@@ -51,6 +51,12 @@ class SwitchGamepad(PhysicalGamepad):
         self.config = []
         self.device = self._get_device()
 
+    def start(self):
+        self.device.grab()
+
+    def stop(self):
+        self.device.ungrab()
+
     def read_input(self):
         # time.sleep(5)
         # print("Read from ZKNS-001 correct")

@@ -37,8 +37,11 @@ class MainWindow(QMainWindow):
 
     def populate_controller_combobox(self):
         self._gui.comboBox_emulatedControllerModel.addItem("PC two-handle controller (DGOC-44U)", gamepad_emulated.PC2HandleGamepad())
-        self._gui.comboBox_emulatedControllerModel.addItem("N64 two-handle controller (TCPP-20003)", gamepad_emulated.N64Gamepad())
         self._gui.comboBox_emulatedControllerModel.setCurrentIndex(0)
+        self._gui.comboBox_emulatedControllerModel.addItem("Sony PlayStation two-handle controller (SLPH-00051)", gamepad_emulated.PS1Gamepad())
+        self._gui.comboBox_emulatedControllerModel.addItem("Nintendo 64 two-handle controller (TCPP-20003)", gamepad_emulated.N64Gamepad())
+        self._gui.comboBox_emulatedControllerModel.addItem("SEGA Saturn two-handle controller (TC-5175290)", gamepad_emulated.SATGamepad())
+        self._gui.comboBox_emulatedControllerModel.model().sort(0)
 
     def controller_list_refresh(self):
         self.gamepad_model.beginResetModel()

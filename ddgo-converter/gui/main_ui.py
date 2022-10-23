@@ -71,6 +71,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.comboBox_emulatedControllerModel.sizePolicy().hasHeightForWidth())
         self.comboBox_emulatedControllerModel.setSizePolicy(sizePolicy)
+        self.comboBox_emulatedControllerModel.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
         self.comboBox_emulatedControllerModel.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContents)
         self.comboBox_emulatedControllerModel.setObjectName("comboBox_emulatedControllerModel")
         self.horizontalLayout.addWidget(self.comboBox_emulatedControllerModel)
