@@ -1,3 +1,2 @@
 evdev
-hashlib
 PyQt5
