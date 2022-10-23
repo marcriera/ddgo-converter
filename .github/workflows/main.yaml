@@ -15,7 +15,7 @@ jobs:
     - name: Package Application
       uses: JackMcKew/pyinstaller-action-linux@main
       with:
-        path: ddgo-converter
+        path: .
 
     - uses: actions/upload-artifact@v2
       with:
