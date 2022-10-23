@@ -12,8 +12,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Package Application
-      uses: JackMcKew/pyinstaller-action-linux@main
+    - name: Package application
+      uses: yshalsager/pyinstaller-action-linux@main
       with:
         path: .
 
