@@ -106,34 +106,48 @@ class SwitchGamepad(PhysicalGamepad):
                     match event.value:
                         case 0x0: # EMG
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 9))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x5:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 8))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x13:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 7))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x20:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 6))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x2E:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 5))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x3C:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 4))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x49:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 3))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x57:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 2))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x65:
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 1))
+                            input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x80: # N
                             input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 0))
                         case 0x9F:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 1))
                         case 0xB7:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 2))
                         case 0xCE:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 3))
                         case 0xE6:
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 4))
                         case 0xFF: # P5
+                            input_events.append(InputEvent(InputEvent.EventType.BRAKE_NOTCH, 0))
                             input_events.append(InputEvent(InputEvent.EventType.POWER_NOTCH, 5))
                 return input_events
         except OSError:
