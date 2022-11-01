@@ -52,10 +52,16 @@ class SwitchGamepad(PhysicalGamepad):
         self.device = self._get_device()
 
     def start(self):
-        self.device.grab()
+        try:
+            self.device.grab()
+        except:
+            return
 
     def stop(self):
-        self.device.ungrab()
+        try:
+            self.device.ungrab()
+        except:
+            return
 
     def read_input(self):
         # time.sleep(5)
