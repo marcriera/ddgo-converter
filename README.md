@@ -14,11 +14,13 @@ The executable is ready to use. However, you will need read AND write permission
 
 ## Supported controllers
 
-### Physical
+### Physical (input)
 
+- One-handle controller for PC (DGC-255)
+- Two-handle controller for PC (DGOC-44U)
 - One-handle controller for Nintendo Switch (ZKNS-001)
 
-### Emulated
+### Emulated (output)
 
 - Two-handle controller for PC (DGOC-44U)
 - Two-handle controller for Sony PlayStation (SLPH-00051)
@@ -27,6 +29,6 @@ The executable is ready to use. However, you will need read AND write permission
 
 ## Notes
 
-When emulating console controllers, an emulated Sony PlayStation 3 controller is used for easier mapping. On RetroArch, everything works out of the box.
+When emulating console controllers, an emulated Sony PlayStation 3 controller is used for easier mapping. On RetroArch, everything should work out of the box.
 
 _Densha de GO! 64_ requires connecting the controller to Port 3 and enabling **Independent C-button Controls**.
