@@ -6,7 +6,7 @@ from select import select
 
 def create_gamepad(vid, pid, name):
     match vid, pid:
-        case (0x0f0d, 0x00c1) | (0x33dd, 0x0002):
+        case (0x0f0d, 0x00c1) | (0x33dd, 0x0001) | (0x33dd, 0x0002):
             return SwitchGamepad(vid, pid, name)
         case 0x054c, 0x0268:
             return ClassicGamepad(vid, pid, name)
